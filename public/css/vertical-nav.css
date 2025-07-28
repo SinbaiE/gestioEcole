@@ -1,0 +1,36 @@
+/*-=-=-=-=-=-=-=-=-=-=-=- */
+/* Vertical Navigation    */
+/*-=-=-=-=-=-=-=-=-=-=-=- */
+
+.vertical-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 20px;
+}
+
+.vertical-nav .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #343a40;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.vertical-nav .nav-link:hover {
+    background-color: #e9ecef;
+}
+
+.vertical-nav .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.vertical-nav .nav-link i {
+    margin-right: 10px;
+}

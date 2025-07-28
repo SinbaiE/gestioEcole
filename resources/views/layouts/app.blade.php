@@ -65,7 +65,7 @@
         <!-- Vertical Navigation -->
         <x-vertical-nav />
 
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col" style="margin-left: 250px;">
             <!-- Top Bar -->
             <nav class="bg-white shadow-sm border-b border-gray-200">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

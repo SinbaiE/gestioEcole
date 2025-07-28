@@ -51,6 +51,11 @@ class Invoice extends Model
         return $this->belongsTo(Guest::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function getStatusColorAttribute(): string
     {
         return match($this->status) {

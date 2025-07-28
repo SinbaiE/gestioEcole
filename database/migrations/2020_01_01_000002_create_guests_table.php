@@ -6,30 +6,36 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('guests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('hotel_id')->constrained()->onDelete('cascade');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone');
-            $table->date('date_of_birth')->nullable();
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->string('nationality')->nullable();
-            $table->string('id_type')->nullable();
-            $table->string('id_number')->nullable();
-            $table->text('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('country')->nullable();
-            $table->enum('guest_type', ['individual', 'corporate', 'group', 'vip'])->default('individual');
-            $table->json('preferences')->nullable();
+            $table->string('address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('country');
+            $table->string('zip_code');
+            $table->string('nationality');
+            $table->date('date_of_birth');
+            $table->string('id_type');
+            $table->string('id_number');
+            $table->string('guest_type');
             $table->integer('loyalty_points')->default(0);
-            $table->timestamp('last_stay')->nullable();
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('guests');

@@ -6,23 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->foreignId('hotel_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->enum('category', ['spa', 'restaurant', 'bar', 'laundry', 'transport', 'business_center', 'fitness', 'room_service', 'other']);
+            $table->text('description');
             $table->decimal('price', 10, 2);
-            $table->enum('pricing_type', ['fixed', 'per_hour', 'per_day', 'per_person']);
-            $table->boolean('is_active')->default(true);
-            $table->json('availability_schedule')->nullable();
+            $table->string('pricing_type');
             $table->integer('max_capacity')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('category');
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('services');

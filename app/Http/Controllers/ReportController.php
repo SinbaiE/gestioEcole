@@ -60,7 +60,12 @@ class ReportController extends Controller
             $current->addDay();
         }
         
-        return view('reports.occupancy', compact('occupancyData', 'revenueData', 'startDate', 'endDate'));
+        $data = [
+            'labels' => collect($occupancyData)->pluck('date'),
+            'rates' => collect($occupancyData)->pluck('occupancy_rate'),
+        ];
+
+        return view('reports.occupancy', compact('data', 'occupancyData', 'revenueData', 'startDate', 'endDate'));
     }
 
     public function revenue(Request $request): View
@@ -89,7 +94,7 @@ class ReportController extends Controller
             ->get();
         
         // Revenus des services
-        $serviceRevenue = ServiceBooking::where('hotel_id', $hotelId)
+        $serviceRevenue = ServiceBooking::where('service_bookings.hotel_id', $hotelId)
             ->whereBetween('service_date', [$startDate, $endDate])
             ->where('status', 'completed')
             ->join('services', 'service_bookings.service_id', '=', 'services.id')

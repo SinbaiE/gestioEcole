@@ -85,12 +85,18 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('services.show', $service) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
-                                        <a href="{{ route('services.edit', $service) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                        <a href="{{ route('services.show', $service) }}" class="text-blue-600 hover:text-blue-900" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('services.edit', $service) }}" class="text-indigo-600 hover:text-indigo-900" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                         <form method="POST" action="{{ route('services.destroy', $service) }}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce service ?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Supprimer</button>
+                                            <button type="submit" class="text-red-600 hover:text-red-900" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </form>
                                     </div>
                                 </td>

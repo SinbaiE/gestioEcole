@@ -80,7 +80,7 @@ class ReportController extends Controller
             ->get();
         
         // Revenus par type de chambre
-        $revenueByRoomType = Reservation::where('hotel_id', $hotelId)
+        $revenueByRoomType = Reservation::where('reservations.hotel_id', $hotelId)
             ->whereBetween('check_in_date', [$startDate, $endDate])
             ->where('status', 'checked_out')
             ->join('room_types', 'reservations.room_type_id', '=', 'room_types.id')

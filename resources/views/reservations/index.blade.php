@@ -108,19 +108,25 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('reservations.show', $reservation) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
+                                        <a href="{{ route('reservations.show', $reservation) }}" class="text-blue-600 hover:text-blue-900" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                         @if($reservation->status == 'confirmed')
                                             <form method="POST" action="{{ route('reservations.check-in', $reservation) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="text-green-600 hover:text-green-900">Check-in</button>
+                                                <button type="submit" class="text-green-600 hover:text-green-900" title="Check-in">
+                                                    <i class="fas fa-sign-in-alt"></i>
+                                                </button>
                                             </form>
                                         @endif
                                         @if($reservation->status == 'checked_in')
                                             <form method="POST" action="{{ route('reservations.check-out', $reservation) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="text-orange-600 hover:text-orange-900">Check-out</button>
+                                                <button type="submit" class="text-orange-600 hover:text-orange-900" title="Check-out">
+                                                    <i class="fas fa-sign-out-alt"></i>
+                                                </button>
                                             </form>
                                         @endif
                                     </div>

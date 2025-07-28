@@ -93,11 +93,17 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('invoices.show', $invoice) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
+                                        <a href="{{ route('invoices.show', $invoice) }}" class="text-blue-600 hover:text-blue-900" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                         @if($invoice->status == 'draft')
-                                            <a href="{{ route('invoices.edit', $invoice) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                            <a href="{{ route('invoices.edit', $invoice) }}" class="text-indigo-600 hover:text-indigo-900" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                         @endif
-                                        <a href="{{ route('invoices.download-pdf', $invoice) }}" class="text-green-600 hover:text-green-900">PDF</a>
+                                        <a href="{{ route('invoices.download-pdf', $invoice) }}" class="text-green-600 hover:text-green-900" title="Télécharger le PDF">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

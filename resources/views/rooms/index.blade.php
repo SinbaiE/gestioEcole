@@ -106,8 +106,12 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('rooms.show', $room) }}" class="text-blue-600 hover:text-blue-900">Voir</a>
-                                        <a href="{{ route('rooms.edit', $room) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                        <a href="{{ route('rooms.show', $room) }}" class="text-blue-600 hover:text-blue-900" title="Voir">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('rooms.edit', $room) }}" class="text-indigo-600 hover:text-indigo-900" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

@@ -177,4 +177,11 @@ class InvoiceController extends Controller
         
         return $pdf->download('facture-' . $invoice->invoice_number . '.pdf');
     }
+
+    public function pdf(Invoice $invoice)
+    {
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
+
+        return $pdf->stream('facture-' . $invoice->invoice_number . '.pdf');
+    }
 }

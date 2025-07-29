@@ -60,7 +60,7 @@
     
     @stack('styles')
 </head>
-<body class="font-sans antialiased bg-gradient-to-r from-violet-200 to-blue-200">
+<body class="font-sans antialiased">
     <div class="min-h-screen flex">
         <!-- Vertical Navigation -->
         <x-vertical-nav />

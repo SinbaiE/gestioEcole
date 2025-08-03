@@ -53,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/reports/occupancy', [ReportController::class, 'occupancy'])->name('reports.occupancy');
     Route::get('/reports/revenue', [ReportController::class, 'revenue'])->name('reports.revenue');
     Route::get('/reports/guests', [ReportController::class, 'guests'])->name('reports.guests');
+    Route::get('/reports/checkinout', [ReportController::class, 'checkinout'])->name('reports.checkinout');
 });
 
 Route::middleware('auth')->group(function () {

@@ -12,7 +12,7 @@
 
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-            <form method="POST" action="{{ route('rooms.update', $room) }}" class="p-6">
+            <form method="POST" action="{{ route('rooms.update', $room) }}" class="p-6" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 
@@ -79,6 +79,28 @@
                         <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
                         <textarea name="notes" id="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Notes sur la chambre, équipements spéciaux, etc.">{{ old('notes', $room->notes) }}</textarea>
                         @error('notes')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Images actuelles</label>
+                        <div class="grid grid-cols-3 gap-4">
+                            @foreach($room->images as $image)
+                                <div class="relative">
+                                    <img src="{{ asset('storage/' . $image->path) }}" alt="Room image" class="h-24 w-full object-cover rounded-md">
+                                    <div class="absolute top-0 right-0">
+                                        <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="images" class="block text-sm font-medium text-gray-700">Ajouter de nouvelles images</label>
+                        <input type="file" name="images[]" id="images" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('images.*')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

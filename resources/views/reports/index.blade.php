@@ -7,6 +7,28 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Rapport Entrées/Sorties -->
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">Entrées & Sorties</h3>
+                            <p class="text-sm text-gray-500">Analyse des check-ins et check-outs</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ route('reports.checkinout') }}" class="inline-flex items-center px-4 py-2 bg-teal-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-teal-700 focus:bg-teal-700 active:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Voir le rapport
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Rapport d'occupation -->
             <div class="bg-white overflow-hidden shadow-sm rounded-lg">
                 <div class="p-6">

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
@@ -47,9 +49,11 @@ class RoomController extends Controller
             'housekeeping_status' => 'required|in:clean,dirty,inspected,maintenance',
             'notes' => 'nullable|string|max:1000',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        Room::create([
+        $room = Room::create([
             'room_type_id' => $request->room_type_id,
             'room_number' => $request->room_number,
             'floor' => $request->floor,
@@ -58,6 +62,13 @@ class RoomController extends Controller
             'notes' => $request->notes,
             'is_active' => $request->boolean('is_active', true),
         ]);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $path = $imagefile->store('room_images', 'public');
+                $room->images()->create(['path' => $path]);
+            }
+        }
 
         return redirect()->route('rooms.index')
             ->with('success', 'Chambre créée avec succès.');
@@ -85,17 +96,30 @@ class RoomController extends Controller
             'housekeeping_status' => 'required|in:clean,dirty,inspected,maintenance',
             'notes' => 'nullable|string|max:1000',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'integer|exists:images,id',
         ]);
 
-        $room->update([
-            'room_type_id' => $request->room_type_id,
-            'room_number' => $request->room_number,
-            'floor' => $request->floor,
-            'status' => $request->status,
-            'housekeeping_status' => $request->housekeeping_status,
-            'notes' => $request->notes,
-            'is_active' => $request->boolean('is_active'),
-        ]);
+        $room->update($request->except(['images', 'delete_images']));
+
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imageId) {
+                $image = Image::find($imageId);
+                if ($image && $image->imageable_id === $room->id && $image->imageable_type === get_class($room)) {
+                    Storage::disk('public')->delete($image->path);
+                    $image->delete();
+                }
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $path = $imagefile->store('room_images', 'public');
+                $room->images()->create(['path' => $path]);
+            }
+        }
 
         return redirect()->route('rooms.show', $room)
             ->with('success', 'Chambre mise à jour avec succès.');

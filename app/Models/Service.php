@@ -40,6 +40,11 @@ class Service extends Model
         return $this->hasMany(ServiceBooking::class);
     }
 
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function getCategoryLabelAttribute(): string
     {
         return match($this->category) {
@@ -53,10 +58,5 @@ class Service extends Model
             'room_service' => 'Room Service',
             default => 'Autre'
         };
-    }
-
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'imageable');
     }
 }

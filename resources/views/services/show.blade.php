@@ -16,21 +16,6 @@
     </x-slot>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        @if($service->images->isNotEmpty())
-            <div class="bg-white overflow-hidden shadow-sm rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Galerie d'images</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        @foreach($service->images as $image)
-                            <div>
-                                <img src="{{ asset('storage/' . $image->path) }}" alt="Image du service {{ $service->name }}" class="rounded-lg object-cover h-48 w-full">
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endif
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Informations du service -->
             <div class="lg:col-span-2 space-y-6">

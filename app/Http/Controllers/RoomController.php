@@ -65,7 +65,7 @@ class RoomController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imagefile) {
-                $path = $imagefile->store('room_images', 'public');
+                $path = $imagefile->store('rooms', 'public');
                 $room->images()->create(['path' => $path]);
             }
         }
@@ -99,24 +99,34 @@ class RoomController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'delete_images' => 'nullable|array',
-            'delete_images.*' => 'integer|exists:images,id',
+            'delete_images.*' => 'exists:images,id',
         ]);
 
-        $room->update($request->except(['images', 'delete_images']));
+        $room->update([
+            'room_type_id' => $request->room_type_id,
+            'room_number' => $request->room_number,
+            'floor' => $request->floor,
+            'status' => $request->status,
+            'housekeeping_status' => $request->housekeeping_status,
+            'notes' => $request->notes,
+            'is_active' => $request->boolean('is_active'),
+        ]);
 
+        // Supprimer les images sélectionnées
         if ($request->has('delete_images')) {
             foreach ($request->delete_images as $imageId) {
                 $image = Image::find($imageId);
-                if ($image && $image->imageable_id === $room->id && $image->imageable_type === get_class($room)) {
+                if ($image) {
                     Storage::disk('public')->delete($image->path);
                     $image->delete();
                 }
             }
         }
 
+        // Ajouter de nouvelles images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imagefile) {
-                $path = $imagefile->store('room_images', 'public');
+                $path = $imagefile->store('rooms', 'public');
                 $room->images()->create(['path' => $path]);
             }
         }

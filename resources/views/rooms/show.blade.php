@@ -16,21 +16,6 @@
     </x-slot>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        @if($room->images->isNotEmpty())
-            <div class="bg-white overflow-hidden shadow-sm rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Galerie d'images</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        @foreach($room->images as $image)
-                            <div>
-                                <img src="{{ asset('storage/' . $image->path) }}" alt="Image de la chambre {{ $room->room_number }}" class="rounded-lg object-cover h-48 w-full">
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endif
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Informations de la chambre -->
             <div class="lg:col-span-2 space-y-6">
@@ -131,6 +116,26 @@
                         @endif
                     </div>
                 </div>
+
+                <!-- Images de la chambre -->
+                @if($room->images->isNotEmpty())
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Images</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            @foreach($room->images as $image)
+                                <div>
+                                    <a href="{{ asset('storage/' . $image->path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $image->path) }}" alt="Image de la chambre" class="h-40 w-full object-cover rounded-md hover:opacity-75 transition">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <!-- Historique des réservations -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-lg">

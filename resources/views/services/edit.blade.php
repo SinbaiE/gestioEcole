@@ -33,28 +33,6 @@
                         @enderror
                     </div>
 
-                    <div class="space-y-4">
-                        <label class="block text-sm font-medium text-gray-700">Images actuelles</label>
-                        <div class="grid grid-cols-3 gap-4">
-                            @foreach($service->images as $image)
-                                <div class="relative">
-                                    <img src="{{ asset('storage/' . $image->path) }}" alt="Service image" class="h-24 w-full object-cover rounded-md">
-                                    <div class="absolute top-0 right-0">
-                                        <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="images" class="block text-sm font-medium text-gray-700">Ajouter de nouvelles images</label>
-                        <input type="file" name="images[]" id="images" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        @error('images.*')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700">Catégorie *</label>
                         <select name="category" id="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -104,6 +82,31 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-sm text-gray-500">Nombre maximum de personnes pouvant utiliser ce service simultanément</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Images actuelles</label>
+                        <div class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4">
+                            @foreach($service->images as $image)
+                                <div class="relative">
+                                    <img src="{{ asset('storage/' . $image->path) }}" alt="Image du service" class="h-24 w-full object-cover rounded-md">
+                                    <div class="absolute top-0 right-0">
+                                        <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                     <div>
+                        <label for="images" class="block text-sm font-medium text-gray-700">Ajouter de nouvelles images</label>
+                        <input type="file" name="images[]" id="images" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                        @error('images')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                         @error('images.*')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="flex items-center">

@@ -42,6 +42,11 @@ class Room extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function isAvailable(): bool
     {
         return $this->status === 'available' && $this->housekeeping_status === 'clean';
@@ -57,10 +62,5 @@ class Room extends Model
             'out_of_order' => 'gray',
             default => 'gray'
         };
-    }
-
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'imageable');
     }
 }

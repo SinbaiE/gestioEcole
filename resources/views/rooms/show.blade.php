@@ -117,6 +117,26 @@
                     </div>
                 </div>
 
+                <!-- Images de la chambre -->
+                @if($room->images->isNotEmpty())
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Images</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            @foreach($room->images as $image)
+                                <div>
+                                    <a href="{{ asset('storage/' . $image->path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $image->path) }}" alt="Image de la chambre" class="h-40 w-full object-cover rounded-md hover:opacity-75 transition">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Historique des réservations -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-lg">
                     <div class="px-6 py-4 border-b border-gray-200">

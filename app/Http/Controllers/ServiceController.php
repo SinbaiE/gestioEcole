@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -43,12 +45,21 @@ class ServiceController extends Controller
             'pricing_type' => 'required|in:fixed,per_hour,per_day,per_person',
             'max_capacity' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated['hotel_id'] = auth()->user()->hotel_id;
         $validated['is_active'] = $request->has('is_active');
 
-        Service::create($validated);
+        $service = Service::create($validated);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $path = $imagefile->store('services', 'public');
+                $service->images()->create(['path' => $path]);
+            }
+        }
 
         return redirect()->route('services.index')
             ->with('success', 'Service créé avec succès.');
@@ -76,11 +87,34 @@ class ServiceController extends Controller
             'pricing_type' => 'required|in:fixed,per_hour,per_day,per_person',
             'max_capacity' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'exists:images,id',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
 
         $service->update($validated);
+
+        // Supprimer les images sélectionnées
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imageId) {
+                $image = Image::find($imageId);
+                if ($image) {
+                    Storage::disk('public')->delete($image->path);
+                    $image->delete();
+                }
+            }
+        }
+
+        // Ajouter de nouvelles images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $path = $imagefile->store('services', 'public');
+                $service->images()->create(['path' => $path]);
+            }
+        }
 
         return redirect()->route('services.index')
             ->with('success', 'Service mis à jour avec succès.');

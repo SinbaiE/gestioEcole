@@ -12,7 +12,7 @@
 
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-            <form method="POST" action="{{ route('rooms.store') }}" class="p-6">
+            <form method="POST" action="{{ route('rooms.store') }}" class="p-6" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="space-y-6">
@@ -78,6 +78,17 @@
                         <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
                         <textarea name="notes" id="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Notes sur la chambre, équipements spéciaux, etc.">{{ old('notes') }}</textarea>
                         @error('notes')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="images" class="block text-sm font-medium text-gray-700">Images</label>
+                        <input type="file" name="images[]" id="images" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                        @error('images')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                         @error('images.*')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

@@ -9,7 +9,10 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('locale/{locale}', [LocaleController::class, 'set'])->name('locale.set');
 
 Route::get('/login', function () {
     return redirect()->route('login');

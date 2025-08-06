@@ -4,137 +4,74 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Ubuntu Hearts') }} - @yield('title', 'Rencontres Africaines Authentiques')</title>
-    
+
+    <title>{{ config('app.name', 'Hotelier') }}</title>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/vertical-nav.css') }}">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'african-earth': '#CD853F',
-                        'african-gold': '#FFD700',
-                        'african-emerald': '#50C878',
-                        'african-cobalt': '#0047AB',
-                        'african-ivory': '#FFFFF0',
-                        'ubuntu-orange': '#FF6B35',
-                        'ubuntu-red': '#E74C3C',
-                        'ubuntu-green': '#27AE60',
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'pulse-slow': 'pulse 3s infinite',
-                        'bounce-gentle': 'bounceGentle 2s infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(100%)' },
-                            '100%': { transform: 'translateY(0)' },
-                        },
-                        bounceGentle: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-5px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    @stack('styles')
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
-<body class="font-sans antialiased">
-    <div class="min-h-screen flex">
-        <!-- Vertical Navigation -->
-        <x-vertical-nav />
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900">
+    <div class="flex h-screen bg-gray-100 dark:bg-gray-800">
+        <!-- Sidebar -->
+        <aside x-data="{ open: true }" :class="{'w-64': open, 'w-20': !open}" class="flex-shrink-0 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out">
+            <div class="flex items-center justify-between h-16 px-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <a href="{{ route('dashboard') }}" class="text-2xl font-bold text-gray-800 dark:text-white" :class="{'hidden': !open}">
+                    Hotelier
+                </a>
+                <button @click="open = !open" class="p-2 rounded-md text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            <nav class="mt-4 px-2 space-y-1">
+                <x-sidebar-menu-item route="dashboard" icon="home">Dashboard</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="reservations.index" icon="calendar">Reservations</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="rooms.index" icon="bed">Rooms</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="guests.index" icon="users">Guests</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="services.index" icon="concierge-bell">Services</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="invoices.index" icon="file-text">Invoices</x-sidebar-menu-item>
+                <x-sidebar-menu-item route="reports.index" icon="bar-chart">Reports</x-sidebar-menu-item>
+            </nav>
+        </aside>
 
-        <div class="flex-1 flex flex-col" style="margin-left: 250px;">
-            <!-- Top Bar -->
-            <nav class="bg-white shadow-sm border-b border-gray-200">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <!-- Settings Dropdown -->
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        <div>{{ Auth::user()->full_name }}</div>
-                                        <div class="ml-1">
-                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                    </button>
-                                </x-slot>
-
-                                <x-slot name="content">
-                                    <x-dropdown-link :href="route('profile.edit')">
-                                        <i class="fas fa-user mr-2"></i>
-                                        {{ __('Profil') }}
-                                    </x-dropdown-link>
-
-                                    <!-- Authentication -->
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link :href="route('logout')"
-                                                onclick="event.preventDefault();
-                                                            this.closest('form').submit();">
-                                            <i class="fas fa-sign-out-alt mr-2"></i>
-                                            {{ __('Déconnexion') }}
-                                        </x-dropdown-link>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
-                        </div>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header class="flex items-center justify-between h-16 px-6 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div class="relative w-full max-w-md">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+                                <path d="M21 21L15.803 15.803M15.803 15.803C17.2096 14.3964 18 12.4836 18 10.5C18 6.35786 14.6421 3 10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18C12.4836 18 14.3964 17.2096 15.803 15.803Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                        <input type="text" class="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-indigo-400 dark:focus:border-indigo-300 focus:ring-indigo-300 focus:ring-opacity-40 focus:outline-none focus:ring" placeholder="Search">
                     </div>
                 </div>
-            </nav>
+                <div class="flex items-center space-x-4">
+                    <x-top-nav-user-menu />
+                </div>
+            </header>
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+            <!-- Main content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
+                <div class="container mx-auto px-6 py-8">
+                    @if (isset($header))
+                        <header class="mb-6">
+                            {{ $header }}
+                        </header>
+                    @endif
 
-            <!-- Page Content -->
-            <main class="py-6 flex-1">
-                @if (session('success'))
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
-                        </div>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                            <span class="block sm:inline">{{ session('error') }}</span>
-                        </div>
-                    </div>
-                @endif
-
-                {{ $slot }}
+                    {{ $slot }}
+                </div>
             </main>
         </div>
     </div>

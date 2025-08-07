@@ -16,12 +16,21 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .focus-ring {
+            @apply focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800;
+        }
+        .btn {
+            @apply inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus-ring transition ease-in-out duration-150;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen bg-gray-100 dark:bg-gray-800">
+    <div class="flex h-screen bg-gray-100 dark:bg-gray-800 pattern-bg">
         <!-- Sidebar -->
-        <aside x-data="{ open: true }" :class="{'w-64': open, 'w-20': !open}" class="flex-shrink-0 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out">
+        <aside x-data="{ open: true }" :class="{'w-64': open, 'w-20': !open}" class="flex-shrink-0 w-64 bg-white dark:bg-gray-900/80 border-r border-gray-200 dark:border-gray-700/50 backdrop-blur-sm transition-all duration-300 ease-in-out">
             <div class="flex items-center justify-between h-16 px-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                 <a href="{{ route('dashboard') }}" class="text-2xl font-bold text-gray-800 dark:text-white" :class="{'hidden': !open}">
                     Hotelier

@@ -4,7 +4,7 @@
             <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">
                 {{ __('messages.guests') }}
             </h2>
-            <a href="{{ route('guests.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <a href="{{ route('guests.create') }}" class="btn">
                 New Guest
             </a>
         </div>
@@ -16,11 +16,11 @@
             <form method="GET" action="{{ route('guests.index') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Name, email, phone..." class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Name, email, phone..." class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus-ring dark:bg-gray-800 dark:text-white">
                 </div>
                 <div>
                     <label for="guest_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Guest Type</label>
-                    <select name="guest_type" id="guest_type" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white">
+                    <select name="guest_type" id="guest_type" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus-ring dark:bg-gray-800 dark:text-white">
                         <option value="">All</option>
                         <option value="individual" {{ request('guest_type') == 'individual' ? 'selected' : '' }}>Individual</option>
                         <option value="corporate" {{ request('guest_type') == 'corporate' ? 'selected' : '' }}>Corporate</option>
@@ -29,7 +29,7 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <button type="submit" class="btn w-full justify-center bg-gray-600 hover:bg-gray-700 active:bg-gray-900">
                         Filter
                     </button>
                 </div>
@@ -77,7 +77,20 @@
                         {{ number_format($guest->loyalty_points) }} pts
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
-                        <a href="{{ route('guests.show', $guest) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">View</a>
+                        <div class="flex items-center justify-end space-x-2">
+                            <a href="{{ route('guests.show', $guest) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            <a href="{{ route('guests.edit', $guest) }}" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             @empty

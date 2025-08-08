@@ -13,9 +13,16 @@ class TenantMiddleware
     public function handle(Request $request, Closure $next)
     {
         $host = $request->getHost();
-        $subdomain = explode('.', $host)[0];
 
-        if (in_array($subdomain, ['www', 'app', 'admin', 'hotelier'])) {
+        // Bypass tenant logic for IP addresses and localhost
+        if (filter_var($host, FILTER_VALIDATE_IP) || $host === 'localhost') {
+            return $next($request);
+        }
+
+        $subdomain = explode('.', $host)[0];
+        $exemptSubdomains = config('tenant.exempt_subdomains', []);
+
+        if (in_array($subdomain, $exemptSubdomains)) {
             return $next($request);
         }
 

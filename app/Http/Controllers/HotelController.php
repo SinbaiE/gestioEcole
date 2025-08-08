@@ -7,59 +7,56 @@ use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $hotels = Hotel::all();
+        return view('hotels.index', compact('hotels'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('hotels.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'subdomain' => 'required|string|max:255|unique:hotels',
+            'db_database' => 'required|string|max:255',
+            'db_username' => 'required|string|max:255',
+            'db_password' => 'required|string|max:255',
+        ]);
+
+        Hotel::create($request->all());
+
+        return redirect()->route('hotels.index')->with('success', 'Hotel created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Hotel $hotel)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Hotel $hotel)
     {
-        //
+        return view('hotels.edit', compact('hotel'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Hotel $hotel)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'subdomain' => 'required|string|max:255|unique:hotels,subdomain,' . $hotel->id,
+            'db_database' => 'required|string|max:255',
+            'db_username' => 'required|string|max:255',
+            'db_password' => 'required|string|max:255',
+        ]);
+
+        $hotel->update($request->all());
+
+        return redirect()->route('hotels.index')->with('success', 'Hotel updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Hotel $hotel)
     {
-        //
+        $hotel->delete();
+
+        return redirect()->route('hotels.index')->with('success', 'Hotel deleted successfully.');
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\HotelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('locale/{locale}', [LocaleController::class, 'set'])->name('locale.set');
@@ -56,6 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/reports/occupancy', [ReportController::class, 'occupancy'])->name('reports.occupancy');
     Route::get('/reports/revenue', [ReportController::class, 'revenue'])->name('reports.revenue');
     Route::get('/reports/guests', [ReportController::class, 'guests'])->name('reports.guests');
+
+    // Gestion des hôtels (pour l'admin du SaaS)
+    Route::resource('hotels', HotelController::class);
 });
 
 Route::middleware('auth')->group(function () {

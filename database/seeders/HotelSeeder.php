@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Hotel;
+use Illuminate\Support\Facades\DB;
 
 class HotelSeeder extends Seeder
 {
@@ -13,18 +13,22 @@ class HotelSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('hotels')->delete();
+
         Hotel::create([
-            'name' => 'Grand Hôtel Yaoundé',
-            'slug' => 'grand-hotel-yaounde',
-            'description' => 'Un hôtel de luxe au cœur de Yaoundé offrant des services exceptionnels',
-            'address' => 'Avenue Kennedy, Centre-ville',
-            'city' => 'Yaoundé',
-            'country' => 'Cameroun',
-            'phone' => '+237 222 123 456',
-            'email' => 'contact@grandhotel-yaounde.com',
-            'website' => 'https://grandhotel-yaounde.com',
-            'star_rating' => 5,
-            'amenities' => json_encode(['wifi', 'piscine', 'spa', 'restaurant', 'bar', 'salle_sport', 'parking', 'climatisation']),
+            'name' => 'Hotel Paradise',
+            'subdomain' => 'paradise',
+            'db_database' => 'hotel_paradise',
+            'db_username' => 'root',
+            'db_password' => '',
+        ]);
+
+        Hotel::create([
+            'name' => 'Hotel Ocean View',
+            'subdomain' => 'oceanview',
+            'db_database' => 'hotel_oceanview',
+            'db_username' => 'root',
+            'db_password' => '',
         ]);
     }
 }

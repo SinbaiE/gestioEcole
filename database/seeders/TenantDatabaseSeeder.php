@@ -23,12 +23,6 @@ class TenantDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // This seeder should be run on a specific tenant's database.
-        // You would typically call this from a custom Artisan command, e.g.,
-        // php artisan tenant:seed {hotel_id}
-
-        // For now, we will assume that the connection has been set to the tenant's database.
-
         // Create users
         $users = [
             [
@@ -44,6 +38,20 @@ class TenantDatabaseSeeder extends Seeder
                 'email' => 'receptionist@hotel.com',
                 'role' => 'receptionist',
                 'permissions' => ['reservations', 'guests', 'rooms', 'invoices'],
+            ],
+            [
+                'first_name' => 'Jean',
+                'last_name' => 'Manager',
+                'email' => 'manager@hotel.com',
+                'role' => 'manager',
+                'permissions' => ['reservations', 'guests', 'rooms', 'invoices', 'reports', 'services'],
+            ],
+            [
+                'first_name' => 'Sophie',
+                'last_name' => 'Comptable',
+                'email' => 'accountant@hotel.com',
+                'role' => 'accountant',
+                'permissions' => ['invoices', 'payments', 'reports'],
             ],
         ];
 
@@ -74,6 +82,16 @@ class TenantDatabaseSeeder extends Seeder
                 'room_size' => 35.0,
                 'amenities' => ['wifi', 'tv', 'climatisation', 'balcon'],
             ],
+            [
+                'name' => 'Suite Junior',
+                'description' => 'Suite avec salon séparé',
+                'base_price' => 200000,
+                'max_occupancy' => 4,
+                'bed_count' => 1,
+                'bed_type' => 'King',
+                'room_size' => 50.0,
+                'amenities' => ['wifi', 'tv', 'climatisation', 'salon'],
+            ],
         ];
 
         foreach ($roomTypes as $roomTypeData) {
@@ -96,31 +114,14 @@ class TenantDatabaseSeeder extends Seeder
         }
 
         // Create guests
-        $guests = [
-            [
-                'first_name' => 'Jean',
-                'last_name' => 'Martin',
-                'email' => 'jean.martin@email.com',
-                'phone' => '+237 690 123 456',
-                'nationality' => 'Française',
-            ],
-            [
-                'first_name' => 'Aminata',
-                'last_name' => 'Diallo',
-                'email' => 'aminata.diallo@email.com',
-                'phone' => '+237 691 234 567',
-                'nationality' => 'Camerounaise',
-            ],
-        ];
-
-        foreach ($guests as $guestData) {
-            Guest::create($guestData);
-        }
+        Guest::factory()->count(50)->create();
 
         // Create services
         $services = [
             ['name' => 'Petit-déjeuner', 'category' => 'restaurant', 'price' => 15000, 'pricing_type' => 'per_person'],
             ['name' => 'Transfert aéroport', 'category' => 'transport', 'price' => 25000, 'pricing_type' => 'fixed'],
+            ['name' => 'Massage relaxant', 'category' => 'spa', 'price' => 45000, 'pricing_type' => 'per_hour'],
+            ['name' => 'Blanchisserie', 'category' => 'laundry', 'price' => 5000, 'pricing_type' => 'fixed'],
         ];
 
         foreach ($services as $serviceData) {

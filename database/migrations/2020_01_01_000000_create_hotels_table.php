@@ -14,16 +14,11 @@ return new class extends Migration
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description');
-            $table->string('address');
-            $table->string('city');
-            $table->string('country');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('website')->nullable();
-            $table->integer('star_rating');
-            $table->json('amenities');
+            $table->string('subdomain')->unique();
+            $table->string('db_host')->default('127.0.0.1');
+            $table->string('db_database');
+            $table->string('db_username');
+            $table->string('db_password');
             $table->timestamps();
         });
     }

@@ -28,7 +28,7 @@ class InvoiceFactory extends Factory
             'tax_amount' => $tax,
             'discount_amount' => 0,
             'total_amount' => $total,
-            'line_items' => '[]', // Default to empty JSON array
+            'line_items' => [], // Default to empty array
         ];
     }
 }

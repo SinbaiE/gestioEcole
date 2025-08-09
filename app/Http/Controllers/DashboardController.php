@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guest;
-use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -16,69 +15,122 @@ class DashboardController extends Controller
     {
         $hotelId = auth()->user()->hotel_id;
         $today = Carbon::today();
+        $startDate = $today->copy()->subDays(29);
 
-        // Statistiques principales
+        // Main stats
+        $totalRooms = Room::where('hotel_id', $hotelId)->count();
+        $occupiedRooms = Reservation::where('hotel_id', $hotelId)
+            ->where('check_in_date', '<=', $today)
+            ->where('check_out_date', '>', $today)
+            ->whereIn('status', ['checked_in'])
+            ->count();
+
         $stats = [
-            'total_rooms' => Room::where('hotel_id', $hotelId)->count(),
-            'occupied_rooms' => Room::where('hotel_id', $hotelId)->where('status', 'occupied')->count(),
-            'available_rooms' => Room::where('hotel_id', $hotelId)->where('status', 'available')->count(),
-            'maintenance_rooms' => Room::where('hotel_id', $hotelId)->where('status', 'maintenance')->count(),
+            'total_rooms' => $totalRooms,
+            'occupied_rooms' => $occupiedRooms,
+            'occupancy_rate' => $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100, 1) : 0,
         ];
 
-        $stats['occupancy_rate'] = $stats['total_rooms'] > 0 
-            ? round(($stats['occupied_rooms'] / $stats['total_rooms']) * 100, 1) 
-            : 0;
-
-        // Réservations du jour
-        $todayReservations = [
-            'arrivals' => Reservation::where('hotel_id', $hotelId)
-                ->where('check_in_date', $today)
-                ->where('status', 'confirmed')
-                ->count(),
-            'departures' => Reservation::where('hotel_id', $hotelId)
-                ->where('check_out_date', $today)
-                ->where('status', 'checked_in')
-                ->count(),
-            'in_house' => Reservation::where('hotel_id', $hotelId)
-                ->where('status', 'checked_in')
-                ->count(),
-        ];
-
-        // Revenus du mois
+        // Monthly revenue
         $monthlyRevenue = Reservation::where('hotel_id', $hotelId)
-            ->whereMonth('check_in_date', $today->month)
-            ->whereYear('check_in_date', $today->year)
+            ->whereBetween('check_out_date', [$today->copy()->startOfMonth(), $today->copy()->endOfMonth()])
             ->where('status', 'checked_out')
             ->sum('total_amount');
 
-        // Réservations récentes
-        $recentReservations = Reservation::where('hotel_id', $hotelId)
-            ->with(['guest', 'roomType'])
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Arrivées du jour
+        // Today's arrivals and departures
         $todayArrivals = Reservation::where('hotel_id', $hotelId)
             ->with(['guest', 'roomType', 'room'])
-            ->where('check_in_date', $today)
+            ->whereDate('check_in_date', $today)
             ->where('status', 'confirmed')
             ->get();
 
-        // Départs du jour
         $todayDepartures = Reservation::where('hotel_id', $hotelId)
             ->with(['guest', 'room'])
-            ->where('check_out_date', $today)
+            ->whereDate('check_out_date', $today)
             ->where('status', 'checked_in')
             ->get();
 
+        // Recent reservations
+        $recentReservations = Reservation::where('hotel_id', $hotelId)
+            ->with(['guest', 'roomType'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // Chart Data: Revenue for last 30 days
+        $revenueData = Reservation::where('hotel_id', $hotelId)
+            ->where('status', 'checked_out')
+            ->whereBetween('check_out_date', [$startDate, $today])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get([
+                DB::raw('DATE(check_out_date) as date'),
+                DB::raw('SUM(total_amount) as total')
+            ])
+            ->pluck('total', 'date');
+
+        // Chart Data: Occupancy for last 30 days
+        $occupancyData = Reservation::where('hotel_id', $hotelId)
+            ->whereIn('status', ['checked_in', 'checked_out'])
+            ->where('check_in_date', '<', $today)
+            ->where('check_out_date', '>=', $startDate)
+            ->select('check_in_date', 'check_out_date')
+            ->get();
+
+        // Process data for charts
+        $chartLabels = [];
+        $revenueChartData = [];
+        $occupancyChartData = [];
+
+        for ($i = 0; $i < 30; $i++) {
+            $date = $startDate->copy()->addDays($i);
+            $dateString = $date->format('Y-m-d');
+            $chartLabels[] = $date->format('M d');
+
+            // Revenue
+            $revenueChartData[] = $revenueData->get($dateString, 0);
+
+            // Occupancy
+            $occupiedCount = $occupancyData->filter(function ($res) use ($date) {
+                return $date->between(Carbon::parse($res->check_in_date), Carbon::parse($res->check_out_date)->subDay());
+            })->count();
+
+            $occupancyChartData[] = $totalRooms > 0 ? round(($occupiedCount / $totalRooms) * 100, 1) : 0;
+        }
+
+        $revenueChart = [
+            'labels' => $chartLabels,
+            'datasets' => [
+                [
+                    'label' => 'Revenue',
+                    'data' => $revenueChartData,
+                    'borderColor' => '#4f46e5',
+                    'backgroundColor' => 'rgba(79, 70, 229, 0.1)',
+                    'fill' => true,
+                    'tension' => 0.4,
+                ],
+            ],
+        ];
+
+        $occupancyChart = [
+            'labels' => $chartLabels,
+            'datasets' => [
+                [
+                    'label' => 'Occupancy Rate (%)',
+                    'data' => $occupancyChartData,
+                    'backgroundColor' => '#10b981',
+                ],
+            ],
+        ];
+
         return view('dashboard', compact(
             'stats',
-            'todayReservations',
             'monthlyRevenue',
-            'recentReservations',
             'todayArrivals',
-            'todayDepartures'
+            'todayDepartures',
+            'recentReservations',
+            'revenueChart',
+            'occupancyChart'
         ));
     }
 }

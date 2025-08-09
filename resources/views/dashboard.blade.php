@@ -32,6 +32,15 @@
         />
     </div>
 
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+            <x-line-chart :data="$revenueChart" title="Revenue Last 30 Days" />
+        </div>
+        <div>
+            <x-bar-chart :data="$occupancyChart" title="Occupancy Rate Last 30 Days (%)" />
+        </div>
+    </div>
+
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
             <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md">
@@ -45,7 +54,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Guest</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Room Type</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dates</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                             </tr>
                         </thead>
@@ -54,16 +62,12 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $reservation->guest->full_name }}</div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $reservation->guest->email }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                         {{ $reservation->roomType->name }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                         {{ $reservation->check_in_date->format('d/m/Y') }} - {{ $reservation->check_out_date->format('d/m/Y') }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                        {{ number_format($reservation->total_amount, 0, ',', ' ') }} FCFA
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php
@@ -90,48 +94,31 @@
         <div>
             <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md">
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-medium text-gray-800 dark:text-white">Today's Arrivals</h3>
+                    <h3 class="text-lg font-medium text-gray-800 dark:text-white">Today's Arrivals & Departures</h3>
                 </div>
                 <div class="p-6 space-y-4">
-                    @forelse($todayArrivals as $arrival)
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900 dark:text-white">{{ $arrival->guest->full_name }}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $arrival->roomType->name }}</p>
+                    <div>
+                        <h4 class="text-md font-semibold text-gray-700 dark:text-gray-200">Arrivals ({{ $todayArrivals->count() }})</h4>
+                        @forelse($todayArrivals as $arrival)
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-sm text-gray-900 dark:text-white">{{ $arrival->guest->full_name }}</p>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $arrival->roomType->name }}</span>
                             </div>
-                            @if($arrival->room)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Room {{ $arrival->room->room_number }}
-                                </span>
-                            @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Pending
-                                </span>
-                            @endif
-                        </div>
-                    @empty
-                        <p class="text-gray-500 dark:text-gray-400 text-center">No arrivals today.</p>
-                    @endforelse
-                </div>
-            </div>
-            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md mt-8">
-                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-medium text-gray-800 dark:text-white">Today's Departures</h3>
-                </div>
-                <div class="p-6 space-y-4">
-                    @forelse($todayDepartures as $departure)
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900 dark:text-white">{{ $departure->guest->full_name }}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Room {{ $departure->room->room_number }}</p>
+                        @empty
+                            <p class="text-sm text-gray-500 dark:text-gray-400">No arrivals today.</p>
+                        @endforelse
+                    </div>
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <h4 class="text-md font-semibold text-gray-700 dark:text-gray-200">Departures ({{ $todayDepartures->count() }})</h4>
+                        @forelse($todayDepartures as $departure)
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-sm text-gray-900 dark:text-white">{{ $departure->guest->full_name }}</p>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">Room {{ $departure->room->room_number }}</span>
                             </div>
-                            <a href="{{ route('reservations.show', $departure) }}" class="text-sm text-indigo-600 hover:text-indigo-900">
-                                Check-out
-                            </a>
-                        </div>
-                    @empty
-                        <p class="text-gray-500 dark:text-gray-400 text-center">No departures today.</p>
-                    @endforelse
+                        @empty
+                            <p class="text-sm text-gray-500 dark:text-gray-400">No departures today.</p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Guest;
 use App\Models\Hotel;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\Service;
@@ -28,8 +31,10 @@ class DatabaseSeeder extends Seeder
         $hotels = Hotel::all();
 
         foreach ($hotels as $hotel) {
+            $this->command->info("Seeding data for hotel: {$hotel->name}");
+
             // Create users for this hotel
-            User::factory()->count(10)->create(['hotel_id' => $hotel->id]);
+            User::factory()->count(20)->create(['hotel_id' => $hotel->id]);
             User::factory()->create([
                 'hotel_id' => $hotel->id,
                 'first_name' => 'Admin',
@@ -40,21 +45,55 @@ class DatabaseSeeder extends Seeder
             ]);
 
             // Create room types for this hotel
-            $roomTypes = RoomType::factory()->count(5)->create(['hotel_id' => $hotel->id]);
+            $roomTypes = RoomType::factory()->count(10)->create(['hotel_id' => $hotel->id]);
 
             // Create rooms for this hotel
+            $rooms = collect();
             foreach ($roomTypes as $roomType) {
-                Room::factory()->count(10)->create([
-                    'hotel_id' => $hotel->id,
-                    'room_type_id' => $roomType->id,
-                ]);
+                $rooms = $rooms->merge(
+                    Room::factory()->count(20)->create([
+                        'hotel_id' => $hotel->id,
+                        'room_type_id' => $roomType->id,
+                    ])
+                );
             }
 
             // Create services for this hotel
-            Service::factory()->count(15)->create(['hotel_id' => $hotel->id]);
+            Service::factory()->count(25)->create(['hotel_id' => $hotel->id]);
 
             // Create guests for this hotel
-            Guest::factory()->count(100)->create(['hotel_id' => $hotel->id]);
+            $guests = Guest::factory()->count(500)->create(['hotel_id' => $hotel->id]);
+
+            // Create reservations, invoices, and payments
+            $guests->each(function ($guest) use ($hotel, $rooms) {
+                $reservations = Reservation::factory()->count(rand(1, 5))->create([
+                    'hotel_id' => $hotel->id,
+                    'guest_id' => $guest->id,
+                    'room_id' => $rooms->random()->id,
+                ]);
+
+                foreach ($reservations as $reservation) {
+                    // Create an invoice for completed reservations
+                    if ($reservation->status === 'checked_out') {
+                        $invoice = Invoice::factory()->create([
+                            'hotel_id' => $hotel->id,
+                            'reservation_id' => $reservation->id,
+                            'guest_id' => $guest->id,
+                            'total_amount' => $reservation->total_amount,
+                        ]);
+
+                        // Create a payment for paid invoices
+                        if ($invoice->status === 'paid') {
+                            Payment::factory()->create([
+                                'hotel_id' => $hotel->id,
+                                'invoice_id' => $invoice->id,
+                                'guest_id' => $guest->id,
+                                'amount' => $invoice->total_amount,
+                            ]);
+                        }
+                    }
+                }
+            });
         }
     }
 }

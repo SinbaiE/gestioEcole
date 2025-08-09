@@ -18,6 +18,7 @@ class PaymentFactory extends Factory
     {
         return [
             'payment_number' => 'PAY-' . strtoupper(uniqid()),
+            'amount' => fake()->numberBetween(10000, 500000),
             'payment_method' => fake()->randomElement(['cash', 'card', 'orange_money']),
             'status' => 'completed',
             'payment_date' => now(),

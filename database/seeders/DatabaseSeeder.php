@@ -66,13 +66,23 @@ class DatabaseSeeder extends Seeder
 
             // Create reservations, invoices, and payments
             $guests->each(function ($guest) use ($hotel, $rooms) {
-                $reservations = Reservation::factory()->count(rand(1, 5))->create([
-                    'hotel_id' => $hotel->id,
-                    'guest_id' => $guest->id,
-                    'room_id' => $rooms->random()->id,
-                ]);
+                for ($i = 0; $i < rand(1, 5); $i++) {
+                    $room = $rooms->random();
+                    $roomType = $room->roomType;
+                    $nights = rand(1, 14);
+                    $roomRate = $roomType->base_price;
+                    $totalAmount = $nights * $roomRate;
 
-                foreach ($reservations as $reservation) {
+                    $reservation = Reservation::factory()->create([
+                        'hotel_id' => $hotel->id,
+                        'guest_id' => $guest->id,
+                        'room_id' => $room->id,
+                        'room_type_id' => $roomType->id,
+                        'nights' => $nights,
+                        'room_rate' => $roomRate,
+                        'total_amount' => $totalAmount,
+                    ]);
+
                     // Create an invoice for completed reservations
                     if ($reservation->status === 'checked_out') {
                         $invoice = Invoice::factory()->create([

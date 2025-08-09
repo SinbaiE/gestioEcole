@@ -16,10 +16,19 @@ class InvoiceFactory extends Factory
      */
     public function definition(): array
     {
+        $subtotal = fake()->numberBetween(10000, 500000);
+        $tax = $subtotal * 0.1; // Example 10% tax
+        $total = $subtotal + $tax;
+
         return [
             'invoice_number' => 'INV-' . strtoupper(uniqid()),
-            'status' => 'paid',
+            'status' => fake()->randomElement(['paid', 'sent', 'draft', 'overdue']),
             'due_date' => fake()->dateTimeBetween('+1 week', '+1 month'),
+            'subtotal' => $subtotal,
+            'tax_amount' => $tax,
+            'discount_amount' => 0,
+            'total_amount' => $total,
+            'line_items' => '[]', // Default to empty JSON array
         ];
     }
 }

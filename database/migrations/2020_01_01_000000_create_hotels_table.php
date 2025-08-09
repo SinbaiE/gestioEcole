@@ -15,10 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subdomain')->unique();
-            $table->string('db_host')->default('127.0.0.1');
-            $table->string('db_database');
-            $table->string('db_username');
-            $table->string('db_password');
+            $table->text('description')->nullable();
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('website')->nullable();
+            $table->integer('star_rating')->default(3);
+            $table->json('amenities')->nullable();
             $table->timestamps();
         });
     }

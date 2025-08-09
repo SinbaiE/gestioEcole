@@ -3,14 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Guest extends Model
 {
     use HasFactory;
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new TenantScope);
+    }
+
     protected $fillable = [
+        'hotel_id',
         'first_name',
         'last_name',
         'email',
@@ -38,6 +51,11 @@ class Guest extends Model
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function hotel(): BelongsTo
+    {
+        return $this->belongsTo(Hotel::class);
     }
 
     public function invoices(): HasMany

@@ -93,14 +93,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($invoice->line_items as $item)
+                    @if(is_array($invoice->line_items) && count($invoice->line_items) > 0)
+                        @foreach ($invoice->line_items as $item)
+                            <tr>
+                                <td>{{ $item['description'] ?? 'N/A' }}</td>
+                                <td>{{ $item['quantity'] ?? 0 }}</td>
+                                <td>{{ number_format($item['unit_price'] ?? 0, 2) }}</td>
+                                <td>{{ number_format(($item['quantity'] ?? 0) * ($item['unit_price'] ?? 0), 2) }}</td>
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
-                            <td>{{ $item['description'] }}</td>
-                            <td>{{ $item['quantity'] }}</td>
-                            <td>{{ number_format($item['unit_price'], 2) }}</td>
-                            <td>{{ number_format($item['quantity'] * $item['unit_price'], 2) }}</td>
+                            <td colspan="4" style="text-align: center;">No line items for this invoice.</td>
                         </tr>
-                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

@@ -38,7 +38,7 @@
                     <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus-ring dark:bg-gray-800 dark:text-white">
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" class="btn w-full justify-center bg-gray-600 hover:bg-gray-700 active:bg-gray-900">
+                    <button type="submit" class="btn w-full justify-center bg-gray-800 hover:bg-gray-700 active:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600">
                         Filter
                     </button>
                 </div>
